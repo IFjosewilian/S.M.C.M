@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
+  <title>Cadastro de Paciente</title>
+  <style>
+    .container {
+      max-width: 400px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Cadastro de Paciente</h2>
+    <form>
+      <div class="form-group">
+        <label for="nome">Nome:</label>
+        <input type="text" class="form-control" id="nome" placeholder="" required>
+        <span id="nome-error" class="text-danger"></span>
+      </div>
+      
+	  <div class="form-group">
+        <label for="dataDeNascimento">Data de Nascimento:</label>
+        <input type="text" class="form-control" id="dataDeNascimento" placeholder="" required>
+        <span id="dataDeNascimento-error" class="text-danger"></span>
+      </div>
+	  
+	  <div class="form-group">
+	<label for="genero">Gênero:</label>
+	<select class="form-control" id="genero">
+    <option value="Masculino">Masculino</option>
+    <option value="Feminino">Feminino</option>
+    <option value="Outro">Outro</option>
+	</select>
+	<span id="genero-error" class="text-danger"></span>
+	</div>
+	  
+	  <div class="form-group">
+		<label for="cpf">CPF:</label>
+		<input type="text" class="form-control" id="cpf" placeholder="" required>
+		<span id="cpf-error" class="text-danger"></span>
+	</div>
+	  
+	  <div class="form-group">
+		<label for="endereco">Endereço:</label>
+		<input type="text" class="form-control" id="endereco" placeholder="Rua, Número, Bairro, Cidade-Estado" required>
+	</div>
+	  
+      <div class="form-group">
+        <label for="telefone">Telefone:</label>
+        <input type="text" class="form-control" id="telefone" placeholder="" required>
+        <span id="telefone-error" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label for="email">E-mail:</label>
+        <input type="email" class="form-control" id="email" placeholder="" required>
+        <span id="email-error" class="text-danger"></span>
+      </div>
+      <button type="submit" class="btn btn-primary">Cadastrar</button>
+    </form>
+  </div>
+
+  <script>
+    // Restrição de teclas indesejadas e validação em tempo real para o campo de Nome
+    document.getElementById('nome').addEventListener('input', function(e) {
+      var nomeInput = this.value;
+      var nomeRegex = /^[A-Za-zÀ-ÿ\s]+$/; // Aceita apenas letras maiúsculas e minúsculas com acentuação gráfica pt-br
+      var sanitizedInput = nomeInput.replace(/[^A-Za-zÀ-ÿ\s]/g, '');
+
+      if (nomeInput !== sanitizedInput) {
+        this.value = sanitizedInput;
+      }
+
+      if (!nomeRegex.test(sanitizedInput)) {
+        document.getElementById('nome-error').textContent = 'O nome deve conter apenas letras.';
+      } else {
+        document.getElementById('nome-error').textContent = '';
+      }
+    });
+
+	  
+	  // Máscara em tempo real para o campo de Telefone
+      document.getElementById('telefone').addEventListener('input', function(e) {
+        var telefoneInput = this.value;
+        var sanitizedInput = telefoneInput.replace(/\D/g, '');
+        var formattedInput = '';
+
+        if (sanitizedInput.length > 0) {
+          formattedInput = '(' + sanitizedInput.substring(0, 2) + ')';
+
+          if (sanitizedInput.length > 2) {
+            formattedInput += sanitizedInput.substring(2, 7) + '-' + sanitizedInput.substring(7, 11);
+          }
+        }
+
+        this.value = formattedInput;
+      });
+
+      // Restrição de teclas indesejadas e validação em tempo real para o campo de E-mail
+      document.getElementById('email').addEventListener('input', function(e) {
+        var emailInput = this.value;
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Aceita caracteres padrão de e-mail e exige um '@' presente
+        var sanitizedInput = emailInput.replace(/[^a-zA-Z0-9@._-]/g, '');
+
+        if (emailInput !== sanitizedInput) {
+          this.value = sanitizedInput;
+        }
+
+        var atCount = (sanitizedInput.match(/@/g) || []).length;
+
+        if (atCount !== 1) {
+          document.getElementById('email-error').textContent = 'Digite um endereço de e-mail válido.';
+        } else {
+          document.getElementById('email-error').textContent = '';
+        }
+      });
+	  
+	  // máscara e a validação em tempo real ao campo de data
+	  $(document).ready(function() {
+    $('#dataDeNascimento').inputmask('99/99/9999', {
+      placeholder: 'DD/MM/AAAA',
+      oncomplete: function() {
+        var inputValue = $(this).val();
+        if (!isValidDate(inputValue)) {
+          $('#dataDeNascimento-error').text('Data inválida');
+        } else {
+          $('#dataDeNascimento-error').text('');
+        }
+      },
+      onincomplete: function() {
+        $('#dataDeNascimento-error').text('Data incompleta');
+      }
+    });
+
+    function isValidDate(dateString) {
+      var pattern = /^\d{2}\/\d{2}\/\d{4}$/;
+      if (!pattern.test(dateString)) return false;
+      var parts = dateString.split('/');
+      var day = parseInt(parts[0], 10);
+      var month = parseInt(parts[1], 10);
+      var year = parseInt(parts[2], 10);
+      if (year < 1000 || year > 3000 || month === 0 || month > 12) return false;
+      var maxDay = new Date(year, month, 0).getDate();
+      if (day === 0 || day > maxDay) return false;
+      return true;
+    }
+  });
+	
+
+	//validação de genero:
+	$('#genero').change(function() {
+      var selectedValue = $(this).val();
+      if (selectedValue === '') {
+        $('#genero-error').text('Selecione um gênero');
+      } else {
+        $('#genero-error').text('');
+      }
+    });
+
+
+	//mascara e validacao de cpf:
+	 $(document).ready(function() {
+    $('#cpf').inputmask('999.999.999-99', {
+      placeholder: '___.___.___-__',
+      oncomplete: function() {
+        var inputValue = $(this).val();
+        if (!isValidCPF(inputValue)) {
+          $('#cpf-error').text('CPF inválido');
+        } else {
+          $('#cpf-error').text('');
+        }
+      },
+      onincomplete: function() {
+        $('#cpf-error').text('CPF incompleto');
+      }
+    });
+
+    function isValidCPF(cpf) {
+      cpf = cpf.replace(/[^\d]+/g, '');
+      if (cpf.length !== 11) return false;
+      if (
+        cpf === '00000000000' ||
+        cpf === '11111111111' ||
+        cpf === '22222222222' ||
+        cpf === '33333333333' ||
+        cpf === '44444444444' ||
+        cpf === '55555555555' ||
+        cpf === '66666666666' ||
+        cpf === '77777777777' ||
+        cpf === '88888888888' ||
+        cpf === '99999999999'
+      ) {
+        return false;
+      }
+      var sum = 0;
+      var remainder;
+      for (var i = 1; i <= 9; i++) {
+        sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+      }
+      remainder = (sum * 10) % 11;
+      if (remainder === 10 || remainder === 11) {
+        remainder = 0;
+      }
+      if (remainder !== parseInt(cpf.substring(9, 10))) {
+        return false;
+      }
+      sum = 0;
+      for (i = 1; i <= 10; i++) {
+        sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+      }
+      remainder = (sum * 10) % 11;
+      if (remainder === 10 || remainder === 11) {
+        remainder = 0;
+      }
+      if (remainder !== parseInt(cpf.substring(10, 11))) {
+        return false;
+      }
+      return true;
+    }
+  });
+	// validar endereco
+	$(document).ready(function() {
+    $('#endereco').on('input', function() {
+      var inputValue = $(this).val();
+      var sanitizedValue = sanitizeInput(inputValue);
+      $(this).val(sanitizedValue);
+    });
+
+  function sanitizeInput(inputValue) {
+  var pattern = /^[A-Za-zÀ-ÿ0-9.,\s]*$/;
+  var sanitizedValue = '';
+  var commaCount = 0; // contador de vírgulas
+
+  for (var i = 0; i < inputValue.length; i++) {
+    var char = inputValue.charAt(i);
+    if (pattern.test(char)) {
+      if (char === ',') {
+        if (commaCount < 3) { // verificar se ainda não foram digitadas 3 vírgulas
+          sanitizedValue += char;
+          commaCount++;
+        }
+      } else {
+        sanitizedValue += char;
+      }
+    }
+  }
+
+  return sanitizedValue;
+}
+  });
+    </script>
+  </body>
+</html>
+

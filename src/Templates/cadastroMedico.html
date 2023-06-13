@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Cadastro de Médico</title>
+  <style>
+    .container {
+      max-width: 400px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Cadastro de Médico</h2>
+    <form>
+      <div class="form-group">
+        <label for="nome">Nome:</label>
+        <input type="text" class="form-control" id="nome" placeholder="" required>
+        <span id="nome-error" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label for="especialidade">Especialidade:</label>
+        <input type="text" class="form-control" id="especialidade" placeholder="" required>
+        <span id="especialidade-error" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label for="telefone">Telefone:</label>
+        <input type="text" class="form-control" id="telefone" placeholder="" required>
+        <span id="telefone-error" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label for="email">E-mail:</label>
+        <input type="email" class="form-control" id="email" placeholder="" required>
+        <span id="email-error" class="text-danger"></span>
+      </div>
+      <button type="submit" class="btn btn-primary">Cadastrar</button>
+    </form>
+  </div>
+
+  <script>
+    // Restrição de teclas indesejadas e validação em tempo real para o campo de Nome
+    document.getElementById('nome').addEventListener('input', function(e) {
+      var nomeInput = this.value;
+      var nomeRegex = /^[A-Za-zÀ-ÿ\s]+$/; // Aceita apenas letras maiúsculas e minúsculas com acentuação gráfica pt-br
+      var sanitizedInput = nomeInput.replace(/[^A-Za-zÀ-ÿ\s]/g, '');
+
+      if (nomeInput !== sanitizedInput) {
+        this.value = sanitizedInput;
+      }
+
+      if (!nomeRegex.test(sanitizedInput)) {
+        document.getElementById('nome-error').textContent = 'O nome deve conter apenas letras.';
+      } else {
+        document.getElementById('nome-error').textContent = '';
+      }
+    });
+
+          // Restrição de teclas indesejadas e validação em tempo real para o campo de Especialidade
+      document.getElementById('especialidade').addEventListener('input', function(e) {
+        var especialidadeInput = this.value;
+        var especialidadeRegex = /^[A-Za-zÀ-ÿ\s]+$/; // Aceita apenas letras maiúsculas e minúsculas com acentuação gráfica pt-br
+        var sanitizedInput = especialidadeInput.replace(/[^A-Za-zÀ-ÿ\s]/g, '');
+
+        if (especialidadeInput !== sanitizedInput) {
+          this.value = sanitizedInput;
+        }
+
+        if (!especialidadeRegex.test(sanitizedInput)) {
+          document.getElementById('especialidade-error').textContent = 'A especialidade deve conter apenas letras.';
+        } else {
+          document.getElementById('especialidade-error').textContent = '';
+        }
+      });
+	  
+	  // Máscara em tempo real para o campo de Telefone
+      document.getElementById('telefone').addEventListener('input', function(e) {
+        var telefoneInput = this.value;
+        var sanitizedInput = telefoneInput.replace(/\D/g, '');
+        var formattedInput = '';
+
+        if (sanitizedInput.length > 0) {
+          formattedInput = '(' + sanitizedInput.substring(0, 2) + ')';
+
+          if (sanitizedInput.length > 2) {
+            formattedInput += sanitizedInput.substring(2, 7) + '-' + sanitizedInput.substring(7, 11);
+          }
+        }
+
+        this.value = formattedInput;
+      });
+
+      // Restrição de teclas indesejadas e validação em tempo real para o campo de E-mail
+      document.getElementById('email').addEventListener('input', function(e) {
+        var emailInput = this.value;
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Aceita caracteres padrão de e-mail e exige um '@' presente
+        var sanitizedInput = emailInput.replace(/[^a-zA-Z0-9@._-]/g, '');
+
+        if (emailInput !== sanitizedInput) {
+          this.value = sanitizedInput;
+        }
+
+        var atCount = (sanitizedInput.match(/@/g) || []).length;
+
+        if (atCount !== 1) {
+          document.getElementById('email-error').textContent = 'Digite um endereço de e-mail válido.';
+        } else {
+          document.getElementById('email-error').textContent = '';
+        }
+      });
+    </script>
+  </body>
+</html>
+

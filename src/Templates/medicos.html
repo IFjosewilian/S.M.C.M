@@ -1,0 +1,75 @@
+{% extends 'base.html' %} {% block content %}
+  <title>Médicos</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+  <div class="tela">
+    <div class="container">
+        <h1 class="center">Médicos</h1>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nome</th>
+                    <th>Especialidade</th>
+                    <th>Telefone</th>
+                    <th>E-mail</th>
+                    <th>ID</th>
+                    <!-- Adicione mais colunas conforme necessário -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in dados %}
+                <tr>
+                    <td>{{ row[0] }}</td> <!-- nome -->
+                    <td>{{ row[1] }}</td> <!-- especialidade -->
+                    <td>{{ row[2] }}</td> <!-- telefone -->
+                    <td>{{ row[3] }}</td> <!-- email-->
+                    <td>{{ row[4] }}</td> <!-- id -->
+                    <!-- Adicione mais células de acordo com o número de colunas -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+      <div class="container">
+            <div class="row">
+                <div class="col">
+                    <button id="btnCadastrar" class="btn btn-primary">Cadastrar</button>
+                </div>
+
+                <div class="col text-center">
+                    <button id="btnEditar" class="btn btn-primary">Editar</button>
+                </div>
+
+                <div class="col text-right">
+                    <button id="btnApagar" class="btn btn-primary">Apagar</button>
+                </div>
+            </div>
+            <div class="modal" id="confirmacaoExclusaoModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirmação de Exclusão</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Tem certeza de que deseja excluir os dados?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" id="btnConfirmarExclusao">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends 'base.html' %} {% block content %}
+<title>Consultas</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<div class="tela">
+    <div class="container">
+        <h1 class="center">Consultas</h1>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="data-inicial">Data Inicial:</label>
+                      <input type="date" class="form-control" id="data-inicial" name="data-inicial" required />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="data-final">Data Final:</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="data-final" name="data-final" required />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="verificar-data" onclick="toggleEdicaoDataFinal()" />
+                                    desabilitar
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="paciente">Paciente:</label>
+                        <input type="text" class="form-control" id="paciente" name="paciente" pattern="[a-zA-ZÀ-ÿ\s]+" required />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="medico">Médico:</label>
+                        <select class="form-control" id="medico" name="medico">
+                            <option value="">Todos</option>
+                            {% for row in medicos %}
+                            <option onclick="selectName('{{ row[0] }}')">{{ row[0]}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center">
+              <div class="form-group mt-2">
+                <button class="btn btn-outline-secondary" type="button" id="btnBuscar">Buscar</button>
+              </div>
+            </div>
+        </div>
+
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Status</th>
+                    <th>Data</th>
+                    <th>Horário</th>
+                    <th>Paciente</th>
+                    <th>Médico</th>
+                    <th>ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in dados %}
+                <tr class="table-row" data-id="{{ row[5] }}">
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <button id="btnNovaConsulta" class="btn btn-primary">Nova Consulta</button>
+                </div>
+                <div class="col text-right">
+                    <button id="btnApagarConsulta" class="btn btn-primary">Apagar</button>
+                </div>
+            </div>
+            <div class="modal" id="confirmacaoExclusaoModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirmação de Exclusão</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Tem certeza de que deseja excluir os dados?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" id="btnConfirmarExclusao">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var selectedIDs = []; // Array para armazenar os IDs selecionados
+    $(document).ready(function () {
+        $(".table-row").click(function () {
+            var id = $(this).data("id");
+
+            // Verifica se o ID já está no array de selecionados
+            var index = selectedIDs.indexOf(id);
+            if (index > -1) {
+                // Remove o ID do array se já estiver selecionado
+                selectedIDs.splice(index, 1);
+            } else {
+                // Adiciona o ID ao array se não estiver selecionado
+                selectedIDs.push(id);
+            }
+
+            $(this).toggleClass("selected-row");
+        });
+
+        $("#btnApagarConsulta").click(function () {});
+    });
+
+    // Exibe o modal ao clicar em um botão ou link específico
+    document.getElementById("btnApagarConsulta").addEventListener("click", function () {
+        $("#confirmacaoExclusaoModal").modal("show");
+    });
+
+    // Função para tratar a exclusão confirmada
+    document.getElementById("btnConfirmarExclusao").addEventListener("click", function () {
+        fetch("/consultas/deletarConsulta/" + selectedIDs, { method: "GET" });
+        selectedIDs = [];
+        window.location.href = "/consultas";
+
+        // Feche o modal após a confirmação
+        $("#confirmacaoExclusaoModal").modal("hide");
+    });
+
+    function toggleEdicaoDataFinal() {
+        var checkbox = document.getElementById("verificar-data");
+        var dataFinal = document.getElementById("data-final");
+        dataFinal.disabled = checkbox.checked;
+    }
+
+    function selectName(name) {
+        document.getElementById("medico").value = name;
+    }
+
+    document.getElementById("btnBuscar").addEventListener("click", function () {
+        filtroValores = [];
+
+        filtroValores.push(filtroBusca("medico"));
+        filtroValores.push(filtroBusca("paciente"));
+
+        if (document.getElementById("verificar-data").checked) {
+        console.log("O checkbox está marcado!");
+        filtroValores.push("=");
+        filtroValores.push(filtroBusca("data-inicial"));
+        //
+      } else {
+        console.log("O checkbox não está marcado.");
+        filtroValores.push(filtroBusca("data-final"));
+        filtroValores.push(filtroBusca("data-inicial"));
+      }
+
+
+
+        fetch("/consultas/filtrarConsulta/" + filtroValores, { method: "GET" });
+
+    });
+
+    function filtroBusca(idInput, colunaBanco) {
+        if(document.getElementById(idInput).value == ""){
+
+            return colunaBanco;
+        }else{
+            return document.getElementById(idInput).value;
+        }
+
+
+
+    }
+</script>
+
+{% endblock %}

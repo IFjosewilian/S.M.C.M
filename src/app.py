@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response
+from flask import Flask, render_template
 import mysql.connector
 
 app = Flask(__name__)
@@ -6,12 +6,12 @@ app = Flask(__name__)
 infoMysql = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'senhadobanco',
+    'password': '30121998',
     'database': 'SMCM'
 }
 
 
-@app.route('/index', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     return render_template('base.html')
 

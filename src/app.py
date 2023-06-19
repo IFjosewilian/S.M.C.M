@@ -6,7 +6,7 @@ app = Flask(__name__)
 infoMysql = {
     'host': 'localhost',
     'user': 'root',
-    'password': '30121998',
+    'password': 'senhadobanco',
     'database': 'SMCM'
 }
 

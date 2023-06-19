@@ -1,0 +1,50 @@
+create database SMCM;
+use SMCM;
+
+
+create table Paciente(
+ID int not null primary key AUTO_INCREMENT,
+Nome varchar(30) not null,
+Data_de_Nascimento date not null,
+Gênero varchar(10) not null,
+CPF varchar(14) not null unique,
+Endereço varchar(30) not null,
+Telefone varchar(20) not null,
+Email varchar(40) not null,
+Obs varchar(300)
+);
+
+
+create table Medico(
+ID int not null primary key AUTO_INCREMENT,
+Nome varchar(30) not null,
+Especialidade varchar(40) not null,
+Telefone varchar(20) not null,
+Email varchar(30) not null
+);
+
+
+create table Agendamento
+(
+ID int not null primary key AUTO_INCREMENT,
+Data_agend date not null,
+Horario time not null,
+Valor decimal(8,2) not null,
+Obs varchar(300),
+Status_agend varchar(10) not null,
+ID_paciente int not null,
+ID_medico int not null,
+foreign key (ID_paciente) references Paciente(ID),
+foreign key (ID_medico) references Medico(ID)
+);
+
+
+create table Disponibilidade
+(
+ID int not null primary key AUTO_INCREMENT,
+Data_dispo date not null,
+Horario time not null,
+Status_dispo boolean,
+ID_Medico int not null,
+foreign key (ID_Medico) references Medico(ID)
+);

@@ -62,7 +62,7 @@ body {
 <div class="sidenav">
   <a id="agendamentos" href="#">Agendamentos</a>
   <a id="medicos" href="#">Médicos</a>
-  <a href="#">Paciente</a>
+  <a id="pacientes" href="#">Pacientes</a>
   <a href="#">Opções do Sistema</a>
 </div>
 
@@ -78,6 +78,12 @@ body {
                 window.location.href = '/medicos';
             });
         });
+        $(document).ready(function() {
+            $('#pacientes').click(function() {
+                window.location.href = '/pacientes';
+            });
+        });
+
     </script>
 {% block content %}{% endblock %}
 </body>

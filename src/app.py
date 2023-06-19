@@ -11,12 +11,7 @@ infoMysql = {
 }
 
 
-@app.route('/teste', methods=['GET'])
-def teste():
-    return render_template('teste.html', dados=realizaConsulta("select * from Tbpessoa"))
-
-
-@app.route('/base', methods=['GET'])
+@app.route('/index', methods=['GET'])
 def index():
     return render_template('base.html')
 
@@ -46,6 +41,11 @@ def medicos():
     return render_template('medicos.html')
 
 
+@app.route('/pacientes', methods=['GET'])
+def pacientes():
+    return render_template('pacientes.html')
+
+
 #####################cadastros###############################
 
 @app.route('/cadastroMedico', methods=['GET'])
@@ -56,6 +56,11 @@ def cadastroMedico():
 @app.route('/cadastroPaciente', methods=['GET'])
 def cadastroPaciente():
     return render_template('cadastroPaciente.html')
+
+
+@app.route('/criarConsulta', methods=['GET'])
+def criarConsulta():
+    return render_template('criarConsulta.html')
 
 
 #####################functions para manipulacao de dados###############################
